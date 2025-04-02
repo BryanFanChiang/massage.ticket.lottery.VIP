@@ -1,0 +1,93 @@
+<meta name="robots" content="noindex">
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>按摩券抽獎VIP版</title>
+  <style>
+    /* 設定背景圖片，這裡可替換成您喜歡的圖片 URL */
+    body {
+      background-image: url('https://pic2.zhimg.com/v2-483e42e15dc534f8731f14ba79319f88_r.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+    .container {
+      width: 90%;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      text-align: center;
+    }
+    input,
+    button {
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>按摩券抽獎VIP版</h1>
+    <p>請選擇抽獎次數：</p>
+    <input type="number" id="drawCount" placeholder="請輸入抽獎次數" min="1" value="1">
+    <br>
+    <button onclick="startLottery()">開始抽獎</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // 定義所有獎項及其機率
+    // 獎項: [編, 編三, 編VIP, 編VIPB, 👑]
+    // 機率: 2/12, 2/12, 3/12, 3/12, 2/12
+    const prizes = [
+      { name: "編", probability: 2 },
+      { name: "編三", probability: 2 },
+      { name: "編VIP", probability: 3 },
+      { name: "編VIPB", probability: 3 },
+      { name: "👑", probability: 2 }
+    ];
+
+    // 計算總機率（總和應為 12）
+    const totalProbability = prizes.reduce((sum, prize) => sum + prize.probability, 0);
+
+    // 取得一個獎項
+    function getPrize() {
+      // 生成一個 0 ~ totalProbability 的隨機數
+      let randomNum = Math.random() * totalProbability;
+      for (let i = 0; i < prizes.length; i++) {
+        if (randomNum < prizes[i].probability) {
+          return prizes[i].name;
+        }
+        randomNum -= prizes[i].probability;
+      }
+      // 萬一沒有命中，返回最後一個獎項（理論上不會發生）
+      return prizes[prizes.length - 1].name;
+    }
+
+    // 執行抽獎流程
+    function startLottery() {
+      const count = parseInt(document.getElementById("drawCount").value);
+      if (isNaN(count) || count < 1) {
+        alert("請輸入有效的抽獎次數");
+        return;
+      }
+      let resultText = "<h2>抽獎結果：</h2><ul>";
+      for (let i = 0; i < count; i++) {
+        const prize = getPrize();
+        resultText += `<li>第 ${i + 1} 次: ${prize}</li>`;
+      }
+      resultText += "</ul>";
+      document.getElementById("result").innerHTML = resultText;
+    }
+  </script>
+</body>
+</html>
